@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package tracker_service;
+
+import "messages.proto";
+
+// Basic tracking service
+service TrackingService {
+  // Receives a stream of events sent by clients, returning an EventResponse
+  // when the stream ends
+  rpc CreateEvent(stream Event) returns (EventResponse) {}
+}

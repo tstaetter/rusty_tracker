@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package tracker_service;
+
+import "google/protobuf/timestamp.proto";
+
+// User performing events
+message User {
+  // stranger_id is used when the user can't be identified
+  string stranger_id = 1;
+  // external_id is used when the user is already known
+  optional string external_id = 2;
+  // email is used when the user is already known and has been
+  // assigned an e-mail address
+  optional string email = 3;
+}
+
+// The navigator type is used inside the BrowserClient
+// and to define the user's browser
+message Navigator {
+  string app_code_name = 1;
+  string app_name = 2;
+  string app_version = 3;
+  bool cookie_enabled = 4;
+  string language = 5;
+  string platform = 6;
+  string product = 7;
+  string product_sub = 8;
+  string vendor = 9;
+  string vendor_sub = 10;
+}
+
+// The client is a browser
+message BrowserClient {
+  string user_agent = 1;
+  Navigator navigator = 2;
+}
+
+// Not yet used
+message NativeClient {
+  string os = 1;
+  string os_version = 2;
+  string platform = 3;
+}
+
+// Not yet used
+message ServerClient {
+  string os = 1;
+  string os_version = 2;
+  string framework = 3;
+}
+
+// Generic client type
+message Client {
+  string id = 1;
+  oneof implementation {
+    BrowserClient browser = 2;
+    NativeClient native = 3;
+    ServerClient server = 4;
+  }
+}
+
+// An event property key/value pair
+message Property {
+  string name = 1;
+  string value = 2;
+}
+
+// The event object
+message Event {
+  string name = 1;
+  User user = 2;
+  Client client = 3;
+  google.protobuf.Timestamp sent_at = 4;
+  repeated Property properties = 5;
+}
+
+// EventResponse is returned when the client ends it's stream
+// of events
+message EventResponse {
+  string session_id = 1;
+  int32 status = 2;
+  optional string message = 3;
+}
+
